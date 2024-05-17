@@ -17,20 +17,23 @@ function Game() {
   const [result, setResult] = React.useState("IP");
   const numGuesses = guesses.length;
 
+  const handleSubmitGuess = (guess) => {
+    // Append guess to guesses state
+    let nextGuesses = [...guesses, guess];
+    setGuesses(nextGuesses);
+
+    // Check game state
+    if (guess.text === answer) {
+      setResult("WIN");
+    }
+    if (nextGuesses.length >= 6) {
+      setResult("LOSE");
+    }
+  };
+
   var guessResults = guesses.map((guess) => {
     return checkGuess(guess.text, answer);
   });
-
-  useEffect(() => {
-    // Gather guess results
-    guessResults.forEach((result) => {
-      let status = result.map(({ status }) => status);
-      const isCorrect = (s) => s === "correct";
-      if (status.every(isCorrect)) {
-        setResult("WIN");
-      }
-    });
-  }, [guesses, guessResults]);
 
   return (
     <>
@@ -38,7 +41,7 @@ function Game() {
         <Banner result={result} numGuesses={numGuesses} answer={answer} />
       )}
       <Grid guesses={guesses} guessResults={guessResults} />
-      <TextInput guesses={guesses} setGuesses={setGuesses} result={result} />
+      <TextInput handleSubmitGuess={handleSubmitGuess} result={result} />
       <GuessResults guesses={guesses} />
     </>
   );

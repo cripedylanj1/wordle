@@ -1,6 +1,6 @@
 import React from "react";
 
-function TextInput({ guesses, setGuesses, result }) {
+function TextInput({ result, handleSubmitGuess }) {
   const [guess, setGuess] = React.useState({
     id: crypto.randomUUID(),
     text: "",
@@ -15,8 +15,9 @@ function TextInput({ guesses, setGuesses, result }) {
       alert("Guesses must be 5 characters");
       return;
     }
-    let nextGuesses = [...guesses, guess];
-    setGuesses(nextGuesses);
+
+    // Let parent change its own state
+    handleSubmitGuess(guess);
 
     // Resets text box
     setGuess({
@@ -24,6 +25,7 @@ function TextInput({ guesses, setGuesses, result }) {
       text: "",
     });
   };
+
   const handleChange = (e) => {
     // Transform text, disallow 5+ chars
     let text = e.target.value.toUpperCase();
@@ -43,6 +45,8 @@ function TextInput({ guesses, setGuesses, result }) {
       <input
         id="guess-input"
         type="text"
+        pattern="[a-zA-Z]{5}"
+        title="5 letter word"
         value={guess.text}
         onChange={handleChange}
         disabled={result !== "IP"}
